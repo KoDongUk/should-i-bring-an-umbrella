@@ -1,0 +1,32 @@
+export const cityDetailInfo = [
+  {
+    city: '서울특별시',
+    data: [
+      { cityDetail: "강남구", nx: "61", ny: "126" },
+      { cityDetail: "강동구", nx: "62", ny: "126" },
+      { cityDetail: "강북구", nx: "61", ny: "128" },
+      { cityDetail: "강서구", nx: "96", ny: "76" },
+      { cityDetail: "관악구", nx: "59", ny: "125" },
+      { cityDetail: "광진구", nx: "62", ny: "126" },
+      { cityDetail: "구로구", nx: "58", ny: "125" },
+      { cityDetail: "금천구", nx: "59", ny: "124" },
+      { cityDetail: "노원구", nx: "61", ny: "129" },
+      { cityDetail: "도봉구", nx: "61", ny: "129" },
+      { cityDetail: "동대문구", nx: "61", ny: "127" },
+      { cityDetail: "동작구", nx: "59", ny: "125" },
+      { cityDetail: "마포구", nx: "59", ny: "127" },
+      { cityDetail: "서대문구", nx: "59", ny: "127" },
+      { cityDetail: "서초구", nx: "61", ny: "125" },
+      { cityDetail: "성동구", nx: "61", ny: "127" },
+      { cityDetail: "성북구", nx: "61", ny: "127" },
+      { cityDetail: "송파구", nx: "62", ny: "126" },
+      { cityDetail: "양천구", nx: "58", ny: "126" },
+      { cityDetail: "영등포구", nx: "58", ny: "126" },
+      { cityDetail: "용산구", nx: "60", ny: "126" },
+      { cityDetail: "은평구", nx: "59", ny: "127" },
+      { cityDetail: "종로구", nx: "60", ny: "127" },
+      { cityDetail: "중구", nx: "60", ny: "127" },
+      { cityDetail: "중랑구", nx: "62", ny: "128" },
+    ]
+  },
+];
