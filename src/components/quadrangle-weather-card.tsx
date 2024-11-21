@@ -3,6 +3,7 @@
 import { setWeatherParams } from "@/utils/setWeatherParams";
 import { fetchWeather } from "@/lib/apis/fetchWeather";
 import { useWeatherStore } from "@/stores/weather-store";
+import { cityDetailInfo } from "@/constants/city-info";
 import { useState, useEffect } from "react";
 
 export const QuadRangleWeatherCard = () => {
@@ -11,6 +12,18 @@ export const QuadRangleWeatherCard = () => {
   const [destinationMaxPOP, setDestinationMaxPOP] = useState(0);
   const [isDepartureRainyDay, setIsDepartureRainyDay] = useState(false);
   const [isDestinationRainyDay, setIsDestinationRainyDay] = useState(false);
+  const [departureCityInfo, setDepartureCityInfo] = useState({
+    city: cityDetailInfo[0].city,
+    cityDeatail: cityDetailInfo[0].data[0].cityDetail,
+    nx: cityDetailInfo[0].data[0].nx,
+    ny: cityDetailInfo[0].data[0].ny,
+  })
+  const [destinationCityInfo, setDestinationCityInfo] = useState({
+    city: cityDetailInfo[0].city,
+    cityDeatail: cityDetailInfo[0].data[0].cityDetail,
+    nx: cityDetailInfo[0].data[0].nx,
+    ny: cityDetailInfo[0].data[0].ny,
+  })
 
   const getDepartureLocationWeather = async (locationParams) => {
     const response: any = await fetchWeather(setWeatherParams(locationParams))
@@ -94,10 +107,12 @@ export const QuadRangleWeatherCard = () => {
 
   return (
     <div className="grid grid-cols-2 gap-4 p-4 h-[20vh]">
-      <div className="flex items-center justify-center border rounded-lg shadow-lg bg-white">
+      <div className="flex flex-col items-center justify-center border rounded-lg shadow-lg bg-white">
+        <p>{departureCityInfo.city} {departureCityInfo.cityDeatail}</p>
         <p>{isDepartureRainyDay ? '비' : '비X'} {departureMaxPOP}</p>
       </div>
-      <div className="flex items-center justify-center border rounded-lg p-4 shadow-lg bg-white">
+      <div className="flex flex-col items-center justify-center border rounded-lg p-4 shadow-lg bg-white">
+        <p>{destinationCityInfo.city} {destinationCityInfo.cityDeatail}</p>
         <p>{isDestinationRainyDay ? '비' : '비X'} {departureMaxPOP}</p>
       </div>
     </div>
