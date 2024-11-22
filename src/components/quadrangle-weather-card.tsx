@@ -6,6 +6,8 @@ import { useWeatherStore } from "@/stores/weather-store";
 import { cityDetailInfo } from "@/constants/city-info";
 import { useState, useEffect } from "react";
 
+import { LocationSelectPopup } from "@/components/location-select-popup";
+
 export const QuadRangleWeatherCard = () => {
   const {departureWeather, destinationWeather, setDepartureWeather, setDestinationWeather} = useWeatherStore();
   const [departureMaxPOP, setDepartureMaxPOP] = useState(0);
@@ -14,18 +16,20 @@ export const QuadRangleWeatherCard = () => {
   const [isDestinationRainyDay, setIsDestinationRainyDay] = useState(false);
   const [departureCityInfo, setDepartureCityInfo] = useState({
     city: cityDetailInfo[0].city,
-    cityDeatail: cityDetailInfo[0].data[0].cityDetail,
+    cityDetail: cityDetailInfo[0].data[0].cityDetail,
     nx: cityDetailInfo[0].data[0].nx,
     ny: cityDetailInfo[0].data[0].ny,
   })
   const [destinationCityInfo, setDestinationCityInfo] = useState({
     city: cityDetailInfo[0].city,
-    cityDeatail: cityDetailInfo[0].data[0].cityDetail,
+    cityDetail: cityDetailInfo[0].data[0].cityDetail,
     nx: cityDetailInfo[0].data[0].nx,
     ny: cityDetailInfo[0].data[0].ny,
   })
+  const [isVisibleLocationSelectPopup, setIsVisibleLocationSelectPopup] = useState(false);
+  const [selectedTarget, setSelectedTarget] = useState<'출발지'|'도착지'>('출발지');
 
-  const getDepartureLocationWeather = async (locationParams) => {
+  const getDepartureLocationWeather = async (locationParams: {nx: number, ny: number}) => {
     const response: any = await fetchWeather(setWeatherParams(locationParams))
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -34,7 +38,6 @@ export const QuadRangleWeatherCard = () => {
       let done, value;
       let response;
 
-      // 스트림을 끝까지 읽을 때까지 반복
       while (true) {
         const result = await reader.read();
         done = result.done;
@@ -78,20 +81,21 @@ export const QuadRangleWeatherCard = () => {
   }
 
   useEffect(() => {
-    const departureLocationParams = setWeatherParams(window.localStorage.getItem('departureLocation') ? { nx: 61, ny: 26 } : { nx: 61, ny: 26 });
-    const destinationLocationParams = setWeatherParams(window.localStorage.getItem('destinationLocationParams') ? { nx: 61, ny: 26 } : { nx: 61, ny: 26 });
+    const departureLocationParams =
+      setWeatherParams({nx: departureCityInfo.nx, ny: departureCityInfo.ny});
+    const destinationLocationParams =
+      setWeatherParams({nx: destinationCityInfo.nx, ny: destinationCityInfo.ny});
 
-    // 비동기 함수의 결과를 await 처리
     const fetchWeatherData = async () => {
       const departureWeatherTemp = await getDepartureLocationWeather(departureLocationParams);
       setDepartureWeather(departureWeatherTemp);
-      
+
       const destinationWeatherTemp = await getDepartureLocationWeather(destinationLocationParams);
       setDestinationWeather(destinationWeatherTemp);
     };
 
-    fetchWeatherData();  // fetchWeatherData 함수 호출
-  }, []);
+    fetchWeatherData();
+  }, [departureCityInfo, destinationCityInfo]);
 
   useEffect(() => {
     departureWeather.forEach((item) => {
@@ -105,16 +109,57 @@ export const QuadRangleWeatherCard = () => {
     })
   }, [departureWeather, destinationWeather])
 
+  const onClickChangeLocation = (target: 'departureLocation' | 'destinationLocation') => {
+    setIsVisibleLocationSelectPopup(true);
+    setSelectedTarget(target === 'departureLocation' ? '출발지' : '도착지');
+  }
+
+  const onCloseLocationSelectPopup = () => {
+    setIsVisibleLocationSelectPopup(false);
+  }
+
+  const handleLocationSelectSubmit = ({city, cityDetail, target}: {city: string, cityDetail: string, target: '출발지'|'도착지'}) => {
+    const cityIndex = cityDetailInfo.findIndex(item => item.city === city);
+    const cityDetailIndex = cityDetailInfo[cityIndex].data.findIndex(item => item.cityDetail === cityDetail);
+
+    const changedCityInfo = {
+      city: cityDetailInfo[cityIndex].city,
+      cityDetail: cityDetailInfo[cityIndex].data[cityDetailIndex].cityDetail,
+      nx: cityDetailInfo[cityIndex].data[cityDetailIndex].nx,
+      ny: cityDetailInfo[cityIndex].data[cityDetailIndex].ny,
+    };
+
+    target === '출발지' ? setDepartureCityInfo(changedCityInfo) : setDestinationCityInfo(changedCityInfo);
+  }
+
   return (
     <div className="grid grid-cols-2 gap-4 p-4 h-[20vh]">
-      <div className="flex flex-col items-center justify-center border rounded-lg shadow-lg bg-white">
-        <p>{departureCityInfo.city} {departureCityInfo.cityDeatail}</p>
+      <div
+        className="flex flex-col items-center justify-center border rounded-lg shadow-lg bg-white"
+        onClick={() => onClickChangeLocation('departureLocation')}
+      >
+        <p>{departureCityInfo.city} {departureCityInfo.cityDetail}</p>
         <p>{isDepartureRainyDay ? '비' : '비X'} {departureMaxPOP}</p>
       </div>
-      <div className="flex flex-col items-center justify-center border rounded-lg p-4 shadow-lg bg-white">
-        <p>{destinationCityInfo.city} {destinationCityInfo.cityDeatail}</p>
-        <p>{isDestinationRainyDay ? '비' : '비X'} {departureMaxPOP}</p>
+      <div
+        className="flex flex-col items-center justify-center border rounded-lg p-4 shadow-lg bg-white"
+        onClick={() => onClickChangeLocation('destinationLocation')}
+      >
+        <p>{destinationCityInfo.city} {destinationCityInfo.cityDetail}</p>
+        <p>{isDestinationRainyDay ? '비' : '비X'} {destinationMaxPOP}</p>
       </div>
+
+      {
+        isVisibleLocationSelectPopup &&
+        <LocationSelectPopup
+          isVisible={isVisibleLocationSelectPopup}
+          onClose={onCloseLocationSelectPopup}
+          onSubmit={handleLocationSelectSubmit}
+          target={selectedTarget}
+          city={selectedTarget === '출발지' ? (departureCityInfo.city || '서울특별시') : (destinationCityInfo.city || '서울특별시')}
+          cityDetail={selectedTarget === '출발지' ? (departureCityInfo.cityDetail || '강남구') : (destinationCityInfo.cityDetail || '강남구')}
+        />
+      }
     </div>
   )
 }
