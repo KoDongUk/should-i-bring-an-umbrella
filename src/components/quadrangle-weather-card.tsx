@@ -80,35 +80,6 @@ export const QuadRangleWeatherCard = () => {
     return weatherInfo;
   }
 
-  useEffect(() => {
-    const departureLocationParams =
-      setWeatherParams({nx: departureCityInfo.nx, ny: departureCityInfo.ny});
-    const destinationLocationParams =
-      setWeatherParams({nx: destinationCityInfo.nx, ny: destinationCityInfo.ny});
-
-    const fetchWeatherData = async () => {
-      const departureWeatherTemp = await getDepartureLocationWeather(departureLocationParams);
-      setDepartureWeather(departureWeatherTemp);
-
-      const destinationWeatherTemp = await getDepartureLocationWeather(destinationLocationParams);
-      setDestinationWeather(destinationWeatherTemp);
-    };
-
-    fetchWeatherData();
-  }, [departureCityInfo, destinationCityInfo]);
-
-  useEffect(() => {
-    departureWeather.forEach((item) => {
-      if (item.PTY >= 1) setIsDepartureRainyDay(true);
-      if (item.POP > departureMaxPOP) setDepartureMaxPOP(item.POP);
-    })
-
-    destinationWeather.forEach((item) => {
-      if (item.PTY >= 1) setIsDestinationRainyDay(true);
-      if (item.POP > departureMaxPOP) setDestinationMaxPOP(item.POP);
-    })
-  }, [departureWeather, destinationWeather])
-
   const onClickChangeLocation = (target: 'departureLocation' | 'destinationLocation') => {
     setIsVisibleLocationSelectPopup(true);
     setSelectedTarget(target === 'departureLocation' ? '출발지' : '도착지');
@@ -131,6 +102,48 @@ export const QuadRangleWeatherCard = () => {
 
     target === '출발지' ? setDepartureCityInfo(changedCityInfo) : setDestinationCityInfo(changedCityInfo);
   }
+
+  useEffect(() => {
+    const departureLocationParams =
+      setWeatherParams({nx: departureCityInfo.nx, ny: departureCityInfo.ny});
+
+    const fetchWeatherData = async () => {
+      const departureWeatherTemp = await getDepartureLocationWeather(departureLocationParams);
+      setDepartureWeather(departureWeatherTemp);
+    };
+
+    fetchWeatherData();
+  }, [departureCityInfo]);
+
+  useEffect(() => {
+    const destinationLocationParams =
+      setWeatherParams({nx: destinationCityInfo.nx, ny: destinationCityInfo.ny});
+
+    const fetchWeatherData = async () => {
+      const destinationWeatherTemp = await getDepartureLocationWeather(destinationLocationParams);
+      setDestinationWeather(destinationWeatherTemp);
+    };
+
+    fetchWeatherData();
+  }, [destinationCityInfo]);
+
+  useEffect(() => {
+    setDepartureMaxPOP(0);
+
+    departureWeather.forEach((item) => {
+      if (item.PTY >= 1) setIsDepartureRainyDay(true);
+      if (item.POP > departureMaxPOP) setDepartureMaxPOP(item.POP);
+    })
+  }, [departureWeather]);
+
+  useEffect(() => {
+    setDestinationMaxPOP(0);
+
+    destinationWeather.forEach((item) => {
+      if (item.PTY >= 1) setIsDestinationRainyDay(true);
+      if (item.POP > destinationMaxPOP) setDestinationMaxPOP(item.POP);
+    })
+  }, [destinationWeather]);
 
   return (
     <div className="grid grid-cols-2 gap-4 p-4 h-[20vh]">
