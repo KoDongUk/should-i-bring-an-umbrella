@@ -137,12 +137,15 @@ export const QuadRangleWeatherCard = () => {
   }, [departureWeather]);
 
   useEffect(() => {
-    setDestinationMaxPOP(0);
+    let tempMaxPOP = 0;
 
     destinationWeather.forEach((item) => {
       if (item.PTY >= 1) setIsDestinationRainyDay(true);
-      if (item.POP > destinationMaxPOP) setDestinationMaxPOP(item.POP);
+      if (item.POP > tempMaxPOP) tempMaxPOP = item.POP;
     })
+
+    setDestinationMaxPOP(tempMaxPOP);
+
   }, [destinationWeather]);
 
   return (
