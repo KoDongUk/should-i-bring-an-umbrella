@@ -23,4 +23,12 @@ export const imgInfo = {
     x: 165,
     y: 21,
   },
+  rainySnowDay: {
+    x: 70,
+    y: 120,
+  },
+  rainySnowNight: {
+    x: 165,
+    y: 120,
+  },
 }
