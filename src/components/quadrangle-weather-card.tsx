@@ -7,6 +7,7 @@ import { cityDetailInfo } from "@/constants/city-info";
 import { useState, useEffect } from "react";
 
 import { LocationSelectPopup } from "@/components/location-select-popup";
+import { WeatherSpriteIcon } from "./weather-sprite-icon";
 
 export const QuadRangleWeatherCard = () => {
   const {departureWeather, destinationWeather, setDepartureWeather, setDestinationWeather} = useWeatherStore();
@@ -151,18 +152,22 @@ export const QuadRangleWeatherCard = () => {
   return (
     <div className="grid grid-cols-2 gap-4 p-4 h-[20vh]">
       <div
-        className="flex flex-col items-center justify-center border rounded-lg shadow-lg bg-white"
+        className="flex flex-col items-center justify-center rounded-lg shadow-lg text-white"
         onClick={() => onClickChangeLocation('departureLocation')}
       >
         <p>{departureCityInfo.city} {departureCityInfo.cityDetail}</p>
-        <p>{isDepartureRainyDay ? '비' : '비X'} {departureMaxPOP}</p>
+        <div className="flex">
+          <WeatherSpriteIcon imgName={`${isDepartureRainyDay ? 'rainyDay' : 'sunnyDay'}`} />{departureMaxPOP}%
+        </div>
       </div>
       <div
-        className="flex flex-col items-center justify-center border rounded-lg p-4 shadow-lg bg-white"
+        className="flex flex-col items-center justify-center rounded-lg p-4 shadow-lg text-white"
         onClick={() => onClickChangeLocation('destinationLocation')}
       >
         <p>{destinationCityInfo.city} {destinationCityInfo.cityDetail}</p>
-        <p>{isDestinationRainyDay ? '비' : '비X'} {destinationMaxPOP}</p>
+        <div className="flex">
+          <WeatherSpriteIcon imgName={`${isDestinationRainyDay ? 'rainyDay' : 'sunnyDay'}`} />{destinationMaxPOP}%
+        </div>
       </div>
 
       {
