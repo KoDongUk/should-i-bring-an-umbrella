@@ -33,7 +33,7 @@ export const LocationSelectPopup = ({ isVisible, onClose, onSubmit, target, city
 
   return (
     <div
-      className={`fixed bottom-0 left-0 w-full bg-white shadow-lg rounded-t-lg h-[25vh] transition-transform duration-300 ${
+      className={`fixed bottom-0 left-0 w-full bg-white shadow-lg rounded-t-lg h-[25vh] transition-transform duration-300 z-10 ${
         isVisible ? "translate-y-0" : "translate-y-full"
       }`}
     >
