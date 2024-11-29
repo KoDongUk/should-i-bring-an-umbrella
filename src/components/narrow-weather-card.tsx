@@ -32,7 +32,7 @@ export const NarrowWeatherCard = () => {
         {departureWeather.map((item, index) => (
           <div key={index} className="flex items-center justify-center h-[5vh] shadow-lg mb-4">
             <WeatherSpriteIcon imgName={`${getWeather(item.PTY)}${index <= 13 ? 'Day' : 'Night'}`} />
-            {item.PTY} {item.POP}
+            <p className="text-sm">{item.TMP}°C / {item.POP}%</p>
           </div>
         ))}
       </div>
@@ -40,7 +40,7 @@ export const NarrowWeatherCard = () => {
       {destinationWeather.map((item, index) => (
           <div key={index} className="flex items-center justify-center h-[5vh] rounded-r-lg shadow-lg mb-4">
             <WeatherSpriteIcon imgName={`${getWeather(item.PTY)}${index <= 13 ? 'Day' : 'Night'}`} />
-            {item.PTY} {item.POP}
+            <p className="text-sm">{item.TMP}°C / {item.POP}%</p>
           </div>
         ))}
       </div>
