@@ -8,7 +8,7 @@ export const WideWeatherCard = () => {
   const [isRainyDay, setIsRainyDay] = useState(false);
 
   useEffect(() => {
-    if (departureWeather.some((item) => item.PTY >= 1) || destinationWeather.some((item) => item.PTY >= 1)) {
+    if (departureWeather.some((item) => parseInt(item.PTY) >= 1) || destinationWeather.some((item) => parseInt(item.PTY) >= 1)) {
       setIsRainyDay(true);
     }
   }, [departureWeather, destinationWeather])
