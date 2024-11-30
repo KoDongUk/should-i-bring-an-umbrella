@@ -1,6 +1,21 @@
 import { create } from 'zustand';
 
-export const useWeatherStore = create((set) => ({
+type WeatherState = {
+  departureWeather: WeatherData[],
+  destinationWeather: WeatherData[],
+  setDepartureWeather: (newWeatherData: WeatherData[]) => void
+  setDestinationWeather: (newWeatherData: WeatherData[]) => void
+}
+
+type WeatherData = {
+  category: string,
+  POP: number,
+  PTY: string,
+  SKY: string,
+  TMP: number,
+}
+
+export const useWeatherStore = create<WeatherState>((set) => ({
   departureWeather: new Array(19).fill(null).map(() => ({
     category: '',
     POP: 0,
